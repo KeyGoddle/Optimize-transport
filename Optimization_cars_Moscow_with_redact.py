@@ -5,11 +5,17 @@ from ortools.linear_solver import pywraplp
 import scipy
 import matplotlib.pyplot as plt
 #matplotlib.use('TkAgg')
+from inspect import currentframe, getframeinfo
+from pathlib import Path
 
-path = 'E:/work/transport/'
+
+filename = getframeinfo(currentframe()).filename
+parent = Path(filename).resolve().parent
+print (parent)
+path = parent
 
 # Загружаем ваш файл в переменную `file` / вместо 'example' укажите название свого файла из текущей директории
-file = path + 'Исходная выгрузка_ТМС_python_Excel.xlsx'
+file = ('data/Исходная_выгрузка_ТМС_python_Excel.xlsx')
 # Загружаем spreadsheet в объект pandas
 xl = pd.ExcelFile(file)
 df = xl.parse('Исходная выгрузка_ТМС_python')
