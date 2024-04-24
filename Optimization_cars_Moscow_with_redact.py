@@ -196,6 +196,54 @@ for _, row in table_cars_target_time_edit_m.iterrows():
     times[key] = value
 
 
+
+#Подготовка данных (для графического представления)
+########-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Фильтрация данных
+filtered_df = df[(df['УФПС начала перевозки'] == ufps) & (df['Дата начала перевозки'] == data_transport)]
+df_cleaned = filtered_df.dropna().copy()
+
+
+# Преобразуем столбцы 'Дата начала перевозки локальное время' и 'Дата окончания перевозки локальное время' в формат datetime
+df_cleaned['Дата начала перевозки локальное время'] = pd.to_datetime(df_cleaned['Дата начала перевозки локальное время'])
+df_cleaned['Дата окончания перевозки (локальное время)'] = pd.to_datetime(df_cleaned['Дата окончания перевозки (локальное время)'])
+
+# Вычисляем время маршрута как разницу между 'Дата окончания перевозки (локальное время)' и 'Дата начала перевозки локальное время'
+df_cleaned['Время маршрута'] = (df_cleaned['Дата окончания перевозки (локальное время)'] - df_cleaned['Дата начала перевозки локальное время']).dt.total_seconds() / 3600  # переводим в часы
+df_cleaned=df_cleaned.reset_index()
+time_by_vehicle_type = {}
+utilization_by_vehicle_type = {}
+
+# Проходим по каждой строке датафрейма
+for index, row in df_cleaned.iterrows():
+    vehicle_type = row['Модель ТС']  # Получаем тип машины
+    time_ = row['Время маршрута']  # Получаем время маршрута
+    # Если тип машины уже есть в словаре, добавляем время к существующей сумме
+    if vehicle_type in time_by_vehicle_type:
+        time_by_vehicle_type[vehicle_type] += time_
+    else:
+        time_by_vehicle_type[vehicle_type] = time_  # Иначе создаем новую запись
+
+count_by_model = df_cleaned['Модель ТС'].value_counts()
+count_by_model_df = pd.DataFrame({'Модель ТС': count_by_model.index, 'Количество маршрутов': count_by_model.values})
+# Рассчитываем процент утилизации для каждой модели машины
+for vehicle_type, total_time in time_by_vehicle_type.items():
+    total_possible_time = 24 * count_by_model_df[count_by_model_df['Модель ТС'] == vehicle_type]['Количество маршрутов'].sum()# Предположим, что каждая машина может быть использована в течение 24 часов
+    utilization_percentage = (total_time / total_possible_time) * 100
+    utilization_by_vehicle_type[vehicle_type] = utilization_percentage
+
+
+
+# Создаем новый датафрейм на основе полученных данных
+summary_df = pd.DataFrame({
+    'Модель ТС': utilization_by_vehicle_type.keys(),
+    'Процент утилизации': utilization_by_vehicle_type.values(),
+    'Количество маршрутов': count_by_model.values,
+    'Дата начала перевозки': df_cleaned['Дата начала перевозки'][0]
+})
+
+# Выводим результаты
+
 #Оптимимзация главная функция
 ########-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -285,10 +333,51 @@ for (i, j), value in result_integer['x_values'].items():
 print(f"Время выполнения: {result_integer['execution_time']} секунд")
 
 ########-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Сначала создадим словарь для хранения суммарного времени маршрутов по типам машин
+total_time_by_car_type = {}
+
+# Перебираем результаты оптимизации
+for (i, j), value in result_integer['x_values'].items():
+    if value > 0:
+        car_type = vehicles[j]['тип']  # Получаем тип машины
+        time_value = times[(deliveries[i]['точка'], car_type)]['время']  # Получаем время маршрута
+
+        # Если тип машины уже есть в словаре, добавляем время маршрута
+        if car_type in total_time_by_car_type:
+            total_time_by_car_type[car_type] += time_value * value
+        else:  # Иначе, создаем новую запись
+            total_time_by_car_type[car_type] = time_value * value
 
 
+
+# Создаем список для хранения данных
+utilization_data = []
+
+# Заполняем список данными
+for car_type, total_time in total_time_by_car_type.items():
+    total_possible_time = 24 * table_cars_moscow_results[table_cars_moscow_results['Модель ТС'] == car_type]['Расчетный номер машины (из ТМС, 1С УАТ)'].sum()
+    utilization_percentage = (total_time / total_possible_time) * 100
+    used_cars_count = table_cars_moscow_results[table_cars_moscow_results['Модель ТС'] == car_type]['Количество рейсов'].sum()
+    
+    # Добавляем данные в список
+    utilization_data.append({
+        'Модель ТС': car_type,
+        'Количество используемых машин (Оптимизация)': used_cars_count,
+        'Процент утилизации(Оптимизация)': utilization_percentage
+    })
+
+# Создаем DataFrame из списка данных
+utilization_df = pd.DataFrame(utilization_data)
+
+# Выводим полученный DataFrame
+########-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Сравнение двух датафреймов
+merged_df = pd.merge(summary_df, utilization_df, on='Модель ТС', how='outer')
+print (merged_df)
+
+########-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 table_target_moscow_1day_results.columns
 
 table_target_moscow_1day_results['Стоимость расходной части перевозки'].sum()/table_target_moscow_1day_results['Стоимость'].sum()
 
-print (sum(table_target_moscow_1day_results['Стоимость']))
+#print (sum(table_target_moscow_1day_results['Стоимость']))
