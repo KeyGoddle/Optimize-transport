@@ -10,23 +10,25 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 
-def main():
+def main(ufps,data_transport):
     data_processor = DataProcessor()
     optimizer = Optimizer()
     visualizer = Visualizer()
-    ufps = 'УФПС МОСКВЫ'
-    data_transport = '2024-02-05T00:00:00.000000000'
+    
     df = data_processor.load_and_prepare_data()
+
     #data_processor.clean_and_transform_data(df, ufps, data_transport)
     table_cars_moscow, table_target_moscow_1day, table_cars_target_time_edit_m = data_processor.prepare_data(df, ufps, data_transport)
+    print (table_cars_moscow, table_target_moscow_1day, table_cars_target_time_edit_m)
     table_cars_target_time_edit_m, vehicles, deliveries, times, table_target_moscow_1day_results, table_cars_moscow_results = data_processor.preprocess_tables(table_cars_target_time_edit_m, table_target_moscow_1day, table_cars_moscow)
     
 
     result_integer = optimizer.optimize_delivery_integer(vehicles, deliveries, times)
+
     print("Результаты оптимизации:")
     print(f"Статус оптимизации: {result_integer['status']}")
     print(f"Общая стоимость доставки: {result_integer['objective_value']}")
-
+    
     optimizer.update_tables(result_integer, table_cars_moscow, table_target_moscow_1day, table_cars_moscow_results, table_target_moscow_1day_results, deliveries, vehicles)
 
     total_time_by_car_type = optimizer.calculate_total_time_by_car_type(result_integer, vehicles, deliveries, times)
@@ -44,6 +46,12 @@ def main():
 
     merged_df = visualizer.merge_dataframes(summary_df, utilization_df)
     print(merged_df)
-
+    print (table_target_moscow_1day_results)
+    
+    return (merged_df)
 if __name__ == "__main__":
-    main()
+    ufps = 'УФПС МОСКОВСКОЙ ОБЛ'
+    data_transport = '2024-02-06T00:00:00.000000000'
+    main(ufps,data_transport)
+#УФПС МОСКОВСКОЙ ОБЛ 2024-02-06T00:00:00.000000000
+#УФПС МОСКОВСКОЙ ОБЛ 2024-02-06T00:00:00.000000000
