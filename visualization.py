@@ -21,17 +21,6 @@ class Visualizer:
 
         return utilization_data
 
-    def clean_and_transform_data(self,df, ufps, data_transport):
-        filtered_df = df[(df['УФПС начала перевозки'] == ufps) & (df['Дата начала перевозки'] == data_transport)]
-        df_cleaned = filtered_df.dropna().copy()
-
-        df_cleaned['Дата начала перевозки локальное время'] = pd.to_datetime(df_cleaned['Дата начала перевозки локальное время'])
-        df_cleaned['Дата окончания перевозки (локальное время)'] = pd.to_datetime(df_cleaned['Дата окончания перевозки (локальное время)'])
-
-        df_cleaned['Время маршрута'] = (df_cleaned['Дата окончания перевозки (локальное время)'] - df_cleaned['Дата начала перевозки локальное время']).dt.total_seconds() / 3600
-        df_cleaned = df_cleaned.reset_index()
-        return df_cleaned
-
     def update_tables(self,result_integer, table_cars_moscow, table_target_moscow_1day, table_cars_moscow_results, table_target_moscow_1day_results, deliveries, vehicles):
         for (i, j), value in result_integer['x_values'].items():
             if value > 0:

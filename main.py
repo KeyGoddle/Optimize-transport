@@ -36,7 +36,7 @@ def main(ufps,data_transport):
     utilization_data = visualizer.create_utilization_data(total_time_by_car_type, table_cars_moscow_results)
     utilization_df = pd.DataFrame(utilization_data)
 
-    df_cleaned = visualizer.clean_and_transform_data(df, ufps, data_transport)
+    df_cleaned = data_processor.clean_and_transform_data(df, ufps, data_transport)
     time_by_vehicle_type = visualizer.calculate_time_by_vehicle_type(df_cleaned)
     count_by_model = df_cleaned['Модель ТС'].value_counts()
     count_by_model_df = pd.DataFrame({'Модель ТС': count_by_model.index, 'Количество маршрутов': count_by_model.values})
