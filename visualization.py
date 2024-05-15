@@ -20,6 +20,26 @@ class Visualizer:
             })
 
         return utilization_data
+    def prepare_all_util(self,total_time_by_car_type, table_cars_moscow_results):
+        prep_utilization_data = []
+
+        for car_type, total_time in total_time_by_car_type.items():
+            used_cars_count = table_cars_moscow_results[table_cars_moscow_results['Модель ТС'] == car_type]['Количество рейсов'].sum()
+
+            prep_utilization_data.append({
+                    'Модель ТС': car_type,
+                    'Количество используемых машин (Оптимизация)': used_cars_count,
+                    'Потраченное время на маршруты': total_time
+                    })
+
+        return prep_utilization_data
+    def calclulate_after_prep_util(self,prep_utilization_data,table_cars_moscow_results):
+        for item in prep_utilization_data:
+            total_possible_time = 24 * table_cars_moscow_results[table_cars_moscow_results['Модель ТС'] == item['Модель ТС']]['Расчетный номер машины (из ТМС, 1С УАТ)'].sum()
+            utilization_percentage = (item['Потраченное время на маршруты'] / total_possible_time) * 100
+            item['Процент утилизации(Оптимизация)'] = utilization_percentage
+        return prep_utilization_data
+
 
     def update_tables(self,result_integer, table_cars_moscow, table_target_moscow_1day, table_cars_moscow_results, table_target_moscow_1day_results, deliveries, vehicles):
         for (i, j), value in result_integer['x_values'].items():
@@ -67,18 +87,25 @@ class Visualizer:
 
         for vehicle_type, total_time in time_by_vehicle_type.items():
             total_possible_time = 24 * count_by_model_df[count_by_model_df['Модель ТС'] == vehicle_type]['Количество маршрутов'].sum()
-            utilization_percentage = (total_time / total_possible_time) * 100
-            utilization_by_vehicle_type[vehicle_type] = utilization_percentage
+            if total_possible_time == 0:  # Проверка на деление на ноль
+                utilization_by_vehicle_type[vehicle_type] = 0
+            else:
+
+                utilization_percentage = (total_time / total_possible_time) * 100
+                utilization_by_vehicle_type[vehicle_type] = utilization_percentage
 
         return utilization_by_vehicle_type
 
     def create_summary_df(self,utilization_by_vehicle_type, count_by_model, df_cleaned,ufps):
+        #print("Length of utilization_by_vehicle_type:", len(utilization_by_vehicle_type))
+        #print("Length of count_by_model:", len(count_by_model))
+        #print("Length of df_cleaned['Модель ТС']:", len(df_cleaned['Модель ТС']))
         summary_df = pd.DataFrame({
             'Модель ТС': utilization_by_vehicle_type.keys(),
             'Процент утилизации': utilization_by_vehicle_type.values(),
             'Количество маршрутов': count_by_model.values,
-            'Дата начала перевозки': df_cleaned['Дата начала перевозки'][0],
-            'УФПСИ':ufps
+            'Дата начала перевозки': df_cleaned['Дата начала перевозки'].min(),
+            'УФПС':ufps
         })
 
         return summary_df

@@ -53,6 +53,7 @@ class Optimizer:
                     total_time_by_car_type[car_type] += time_value * value
                 else:
                     total_time_by_car_type[car_type] = time_value * value
+        #print (total_time_by_car_type)
         return total_time_by_car_type
     def update_tables(self,result_integer, table_cars_moscow, table_target_moscow_1day, table_cars_moscow_results, table_target_moscow_1day_results, deliveries, vehicles):
         for (i, j), value in result_integer['x_values'].items():
