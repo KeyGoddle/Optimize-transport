@@ -83,12 +83,13 @@ class Visualizer:
 
         return utilization_by_vehicle_type
 
-    def create_summary_df(self,utilization_by_vehicle_type, count_by_model, df_cleaned):
+    def create_summary_df(self,utilization_by_vehicle_type, count_by_model, df_cleaned,ufps):
         summary_df = pd.DataFrame({
             'Модель ТС': utilization_by_vehicle_type.keys(),
             'Процент утилизации': utilization_by_vehicle_type.values(),
             'Количество маршрутов': count_by_model.values,
-            'Дата начала перевозки': df_cleaned['Дата начала перевозки'][0]
+            'Дата начала перевозки': df_cleaned['Дата начала перевозки'][0],
+            'УФПСИ':ufps
         })
 
         return summary_df

@@ -19,7 +19,7 @@ def main(ufps,data_transport):
 
     #data_processor.clean_and_transform_data(df, ufps, data_transport)
     table_cars_moscow, table_target_moscow_1day, table_cars_target_time_edit_m = data_processor.prepare_data(df, ufps, data_transport)
-    print (table_cars_moscow, table_target_moscow_1day, table_cars_target_time_edit_m)
+    #print (table_cars_moscow, table_target_moscow_1day, table_cars_target_time_edit_m)
     table_cars_target_time_edit_m, vehicles, deliveries, times, table_target_moscow_1day_results, table_cars_moscow_results = data_processor.preprocess_tables(table_cars_target_time_edit_m, table_target_moscow_1day, table_cars_moscow)
     
 
@@ -42,13 +42,18 @@ def main(ufps,data_transport):
     count_by_model_df = pd.DataFrame({'Модель ТС': count_by_model.index, 'Количество маршрутов': count_by_model.values})
 
     utilization_by_vehicle_type = visualizer.calculate_utilization_by_vehicle_type(time_by_vehicle_type, count_by_model_df)
-    summary_df = visualizer.create_summary_df(utilization_by_vehicle_type, count_by_model, df_cleaned)
+    summary_df = visualizer.create_summary_df(utilization_by_vehicle_type, count_by_model, df_cleaned,ufps)
 
     merged_df = visualizer.merge_dataframes(summary_df, utilization_df)
-    print(merged_df)
-    print (table_target_moscow_1day_results)
+
     
-    return (merged_df)
+    table_target_moscow_1day_results['УФПС']=ufps
+    table_target_moscow_1day_results['Дата начала перевозки']=pd.to_datetime(data_transport)
+
+    print (table_target_moscow_1day_results)
+    print(merged_df)
+
+    return (merged_df,table_target_moscow_1day_results)
 if __name__ == "__main__":
     ufps = 'УФПС МОСКОВСКОЙ ОБЛ'
     data_transport = '2024-02-06T00:00:00.000000000'

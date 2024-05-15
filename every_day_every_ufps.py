@@ -19,18 +19,20 @@ class Every_day_every_day_ufps:
         data_processor = DataProcessor()
         df = data_processor.load_and_prepare_data()
 
-        every_day_every_ufps = pd.DataFrame()
-
+        every_day_every_ufps_util = pd.DataFrame()
+        every_day_every_ufps_table_target = pd.DataFrame()
         all_pairs = list(product(df['УФПС начала перевозки'].unique(), df['Дата начала перевозки'].unique()))
         filtered_pairs = list(filter(self.filter_pairs, all_pairs))
 
         for ufps,data_transport in filtered_pairs:
-            vrem_df=main(ufps,data_transport)
-            every_day_every_ufps = every_day_every_ufps.append(vrem_df) 
+            vrem_df_util,vrem_df_table_target=main(ufps,data_transport)
+            every_day_every_ufps_util = every_day_every_ufps_util.append(vrem_df_util) 
+            every_day_every_ufps_table_target = every_day_every_ufps_table_target.append(vrem_df_table_target) 
 
-        every_day_every_ufps = every_day_every_ufps.reset_index(drop=True)
+        every_day_every_ufps_util = every_day_every_ufps_util.reset_index(drop=True)
+        every_day_every_ufps_table_target = every_day_every_ufps_table_target.reset_index(drop=True)
 
-        return every_day_every_ufps
+        return every_day_every_ufps_util,every_day_every_ufps_table_target
 
 
 
