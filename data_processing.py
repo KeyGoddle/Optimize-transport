@@ -32,16 +32,15 @@ class DataProcessor:
 
         df_car = df[['Расчетный номер машины (из ТМС, 1С УАТ)', 'Наличие автомашины в собственном парке Почты', \
             'Фактическая грузоподъемность ТС (в кг)', 'УФПС начала перевозки', 'Модель ТС', 'затраты на км']]
-
+        
         df_car = df_car.dropna()
 
-        dpt_cars_M = pd.pivot_table(df_car[(df_car['Наличие автомашины в собственном парке Почты']==1) & \
-                                        (df_car['УФПС начала перевозки']=='УФПС МОСКВЫ')], \
+        dpt_cars_M = pd.pivot_table(df_car[(df_car['Наличие автомашины в собственном парке Почты']==1)], \
                                         index=['Модель ТС'], values='Расчетный номер машины (из ТМС, 1С УАТ)', aggfunc='nunique')
 
         dpt_cars_M_attrib = pd.pivot_table(df_car[(df_car['Наличие автомашины в собственном парке Почты']==1)], \
                                             index=['Модель ТС'], values=['Фактическая грузоподъемность ТС (в кг)', 'затраты на км'], aggfunc='median')
-
+        #print (dpt_cars_M_attrib)
         dpt_cars_M.reset_index(inplace=True)
         dpt_cars_M_attrib.reset_index(inplace=True)
 
@@ -80,10 +79,11 @@ class DataProcessor:
 
         df_combined = pd.merge(dpt_target_distance, dpt_car_velocity_real, how='cross')
         df_combined['время тс на маршруте'] = df_combined['Фактическое расстояние']/df_combined['Средняя скорость передвижения']
-
+        #print (table_cars)
         return table_cars, table_target, df_combined
 
     def preprocess_tables(self,table_cars_target_time_edit_m, table_target_moscow_1day, table_cars_moscow):
+
         table_cars_target_time_edit_m = table_cars_target_time_edit_m[table_cars_target_time_edit_m['Наименование маршрута'].isin(table_target_moscow_1day['Наименование маршрута'])]
         table_cars_target_time_edit_m['время тс на маршруте'] = table_cars_target_time_edit_m['время тс на маршруте'].clip(upper=24)
 
