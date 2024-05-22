@@ -6,7 +6,7 @@ This repository contains a logistic optimization model aimed at minimizing the t
 ## Objective Function
 The objective of the model is to minimize the total transportation cost:
 
-$$\[ \text{Minimize:} \$$
+$$\text{Minimize:} \$$
 $$Z = \sum_{k=1}^p \sum_{j=1}^n \sum_{i=1}^m (x_{i,j,k} \cdot c_{i,j}) \$$
 
 Where:
