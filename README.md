@@ -6,7 +6,7 @@ This repository contains a logistic optimization model aimed at minimizing the t
 ## Objective Function
 The objective of the model is to minimize the total transportation cost:
 
-Minimize: $$Z = \sum_{j=1}^n\ \sum_{i=1}^n (x_{i,j} * c_{i,j}) \$$
+Minimize: 
 $$Z = \sum_{k=1}^p \sum_{j=1}^n \sum_{i=1}^m (x_{i,j,k} \cdot c_{i,j}) \$$
 
 Where:
@@ -15,12 +15,12 @@ Where:
 
 ## Constraints
 1. **Demand Satisfaction**:
-   \[ \sum_{k=1}^p \sum_{j=1}^n (x_{i,j,k} \cdot d_i) \geq d_i \quad \forall i \]
-   Ensure that the demand \( d_i \) at each point \( i \) is met.
+   \$$[ \sum_{k=1}^p \sum_{j=1}^n (x_{i,j,k} \cdot d_i) \geq d_i \quad \forall i \]$$
+   Ensure that the demand \$$( d_i \)$$ at each point \$$( i \)$$ is met.
 
 2. **Cargo Quantity Limit**:
    \$$[ \sum_{k=1}^p \sum_{j=1}^n x_{i,j,k} \leq q_i \quad \forall i \]$$
-   Ensure that the total quantity of cargo \( q_i \) does not exceed the capacity for each point \( i \).
+   Ensure that the total quantity of cargo \$$( q_i \)$$ does not exceed the capacity for each point \$$( i \)$$.
 
 3. **Delivery Time Limit**:
    \[ \sum_{k=1}^p \sum_{j=1}^n (x_{i,j,k} \cdot p_{i,j}) \leq 24 \quad \forall i \]
