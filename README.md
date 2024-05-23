@@ -32,7 +32,7 @@ Where:
 
 5. **Daily Driving Time Limit**:
    \[ \text{drive\_time}_k \leq T_{\text{drive\_max}} \quad \forall k, \text{day} \]
-   $$ drive_time{k} =< T{drive_time},forall k$$
+   $$\ drive_time{k} =< T{drive_time}\,forall k$$
 
    Ensure that the daily driving time does not exceed \( T_{\text{drive\_max}} \) (e.g., 9 hours per day, with an allowance of up to 10 hours twice a week).
 
