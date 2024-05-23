@@ -299,3 +299,7 @@ if __name__ == "__main__":
 #table_target_moscow_1day_results['Стоимость расходной части перевозки'].sum()/table_target_moscow_1day_results['Стоимость'].sum()
 
 #print (sum(table_target_moscow_1day_results['Стоимость'])
+
+
+
+#dfsidfh[aosdghfpuagsduipfgaisdgfiagsu]
