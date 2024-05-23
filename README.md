@@ -1,57 +1,57 @@
 # Logistic Optimization Model
 
 ## Overview
-This repository contains a logistic optimization model aimed at minimizing the total transportation cost while considering various constraints related to vehicle capacities, delivery times, and driver working hours.
+Этот репозиторий содержит модель логистической оптимизации, направленную на минимизацию общей стоимости транспортировки с учетом различных ограничений, связанных с вместимостью транспортных средств, временем доставки и рабочим временем водителей.
 
 ## Objective Function
-The objective of the model is to minimize the total transportation cost:
+Цель модели - минимизировать общую стоимость транспортировки:
 
 Minimize: 
 $$Z = \sum_{k=1}^p \sum_{j=1}^n \sum_{i=1}^m (x_{i,j,k} \cdot c_{i,j}) \$$
 
 Where:
-- \$$( x_{i,j,k} \)$$ — quantity of cargo \$$( j \)$$ delivered to point \$$( i \)$$ by driver \$$( k \)$$.
-- \$$( c_{i,j} \)$$ — cost associated with transporting cargo \$$( j \)$$ to point \$$( i \)$$.
+- \$$( x_{i,j,k} \)$$ — количество груза \$$( j \)$$ доставленного к точке \$$( i \)$$ водителем  \$$( k \)$$.
+- \$$( c_{i,j} \)$$ — стоимость доставки груза \$$( j \)$$ к точке \$$( i \)$$.
 
 ## Constraints
-1. **Demand Satisfaction**:
+1. **Удовлетворение веса**:
    \$$[ \sum_{k=1}^p \sum_{j=1}^n (x_{i,j,k} \cdot d_i) \geq d_i \quad \forall i \]$$
-   Ensure that the demand \$$( d_i \)$$ at each point \$$( i \)$$ is met.
+   Обеспечить удовлетворение веса \$$( d_i \)$$ на каждой точке \$$( i \)$$ is met.
 
-2. **Cargo Quantity Limit**:
+2. **Ограничение на количество груза**:
    \$$[ \sum_{k=1}^p \sum_{j=1}^n x_{i,j,k} \leq q_i \quad \forall i \]$$
-   Ensure that the total quantity of cargo \$$( q_i \)$$ does not exceed the capacity for each point \$$( i \)$$.
+   Обеспечить, чтобы общее количество груза \$$( q_i \)$$ не превышало вместимость для каждой точки  \$$( i \)$$.
 
-3. **Delivery Time Limit**:
+3. **Ограничение времени доставки**:
    \$$[ \sum_{k=1}^p \sum_{j=1}^n (x_{i,j,k} \cdot p_{i,j}) \leq 24 \quad \forall i \]$$
-   Ensure that deliveries are made within a 24-hour period.
+   Обеспечить, чтобы доставки осуществлялись в течение 24-часового периода.
 
-4. **Driver Work Hours Limit (Over Accounting Period)**:
+4. **Ограничение на рабочее время водителя (за период учета)**:
    \$$[ \sum_{i=1}^m \sum_{j=1}^n t_{i,j,k} \leq T_{\text{max}} \quad \forall k \]$$
-   Ensure that the total working hours of each driver \$$( k \)$$ do not exceed the maximum allowed \$$( T_{\text{max}} \)$$ over the accounting period (e.g., 40 hours per week).
+   Обеспечить, чтобы общее рабочее время каждого водителя \$$( k \)$$ не превышало максимально допустимое \$$( T_{\text{max}} \)$$ за период учета (например, 40 часов в неделю)
 
-5. **Daily Driving Time Limit**:
-   \[ \text{drive\_time}_k \leq T_{\text{drive\_max}} \quad \forall k, \text{day} \]
-   $$\ drive_time{k} =< T{drive_time}\,forall k$$
+5. **Ограничение на ежедневное время вождения**:
+   $$\ drive‗time_{k} \leq \ T_{drive‗max}\quad \forall k \, день$$
 
-   Ensure that the daily driving time does not exceed \( T_{\text{drive\_max}} \) (e.g., 9 hours per day, with an allowance of up to 10 hours twice a week).
+  Обеспечить, чтобы ежедневное время вождения не превышало $$\( T_{\text{drive‗max}} \)$$ (например, 9 часов в день, с допуском до 10 часов дважды в неделю).
 
 
-6. **Weekly Driving Time Limit**:
-   \$$[ \sum_{\text{day}} \text{drive\_time}_k \leq T_{\text{drive\_week}} \quad \forall k \]$$
-   Ensure that the weekly driving time does not exceed \$$( T_{\text{drive\_week}} \)$$ (e.g., 56 hours per week).
+6. **Ограничение на еженедельное время вождения**:
+   \$$\[ \sum_{day} drive‗time_{k} \leq T_{drive‗week} \quad \forall k \]$$
+   Обеспечить, чтобы еженедельное время вождения не превышало \$$( T_{\text{drive‗week}} \)$$ (например, 56 часов в неделю).
 
-7. **Minimum Daily Rest**:
-   \$$[ \text{rest\_time}_k \geq T_{\text{rest\_min}} \quad \forall k, \text{day} \]$$
-   Ensure that each driver \$$( k \)$$ gets a minimum daily rest period \$$( T_{\text{rest\_min}} \)$$ (e.g., 11 hours).
 
-8. **Special Breaks in Driving**:
-   \$$[ \text{if} \ \text{drive\_time}_k \geq 4.5 \ \text{hours}, \ \text{then} \ \text{special break} \ \geq 45 \ \text{minutes} \]$$
-   Ensure that drivers take special breaks after 4.5 hours of driving, unless they are taking a longer rest or meal break.
+7. **Минимальный ежедневный отдых**:
+   \$$[ rest‗time_{k} \geq T_{\text{rest‗min}} \quad \forall k, \text{day} \]$$
+   Обеспечить, чтобы каждый водитель \$$( k \)$$ имел минимальный ежедневный отдых \$$( T_{\text{rest‗min}} \)$$ (например, 11 часов).
 
-9. **Delivery Time Windows**:
+8. **Специальные перерывы во время вождения**:
+   \$$[ if \ \text{drive‗time}_k \geq 4.5 \ \text{hours}, \ \text{then} \ \text{special break} \ \geq 45 \ \text{minutes} \]$$
+   Обеспечить, чтобы водители делали специальные перерывы после  4.5  часов вождения, если они не принимают более продолжительный отдых или перерыв на еду.
+
+9. **Временные окна для доставки**:
    \$$[ a_i \leq t_{i,j,k} \leq b_i \quad \forall i, \forall j, \forall k \]$$
-   Ensure that deliveries to each point \$$( i \)$$ occur within the specified time window \$$([a_i, b_i]\)$$.
+   Обеспечить, чтобы доставки к каждой точке \$$( i \)$$ происходили в указанное временное окно  \$$([a_i, b_i]\)$$.
 
 ## How to Use
 1. Clone this repository:
