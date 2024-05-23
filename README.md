@@ -31,9 +31,10 @@ Where:
    Ensure that the total working hours of each driver \$$( k \)$$ do not exceed the maximum allowed \$$( T_{\text{max}} \)$$ over the accounting period (e.g., 40 hours per week).
 
 5. **Daily Driving Time Limit**:
- Ensure that the daily driving time does not exceed \( T_{\text{drive\_max}} \) (e.g., 9 hours per day, with an allowance of up to 10 hours twice a week).
+   \[ \text{drive\_time}_k \leq T_{\text{drive\_max}} \quad \forall k, \text{day} \]
+   $$ drive_time{k} =< T{drive_time},forall k$$
 
-$$ [ \text{drive\_time}_k \leq T_{\text{drive\_max}} \quad \forall k, \text{day} ] $$
+   Ensure that the daily driving time does not exceed \( T_{\text{drive\_max}} \) (e.g., 9 hours per day, with an allowance of up to 10 hours twice a week).
 
 
 6. **Weekly Driving Time Limit**:
