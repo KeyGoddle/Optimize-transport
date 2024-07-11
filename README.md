@@ -1,7 +1,8 @@
-![image](https://github.com/KeyGoddle/Optimize-transport/assets/61951584/55a8b4a9-85ac-45ff-afdb-34767cfdf154)# Optimize-transport
+# Optimize-transport
 **Версия проекта с расчетом Стоимость перевозки (ТМС) и массой**
 Выполнена 11.07.2024
-![Uploading image.png…]()
+![image](https://github.com/KeyGoddle/Optimize-transport/assets/61951584/55a8b4a9-85ac-45ff-afdb-34767cfdf154)
+![image](https://github.com/KeyGoddle/Optimize-transport/assets/61951584/5d2c819f-c4e4-4450-b874-cf4dbd4355c1)
 
 Транспортная задача c использованием оптимизации
 Minimize: $$Z= \sum_{j=1}^n\ \sum_{i=1}^n (x_{i,j} * c_{i,j}) \$$
